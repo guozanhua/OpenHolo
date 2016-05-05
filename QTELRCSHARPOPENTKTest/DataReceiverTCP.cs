@@ -13,7 +13,7 @@ using System.Threading;
  * the app is doing other stuff
  */
 
-namespace QTELR_Interface
+namespace OpenHolo
 {
     class DataReceiverTCP
     {

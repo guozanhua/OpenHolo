@@ -9,30 +9,33 @@ using System.Threading;
  * use the Kinect and to get data from it.
  */
 
-namespace QTELR_Interface
+namespace OpenHolo
 {
     class KinectManager
     {
         private const int MAX_SENSORS = 4;
         private int num_sensors = 0;
+        private bool colorOn = false;
 
         //Variable declarations
-        private List<KinectSensor> sensors;
+        //private List<KinectSensor> sensors;
+        KinectSensor[] sensors;
         private Thread kinectManagementThread;
 
         // This holds color data
-        private byte[] pixelColorData, pixelColorData2, pixelColorData3, pixelColorData4;
+        private byte[] pixelColorData;
 
-        ColorImageFormat COLOR_IMAGE_FORMAT = ColorImageFormat.RgbResolution640x480Fps30;
-        DepthImageFormat DEPTH_IMAGE_FORMAT;
+        private ColorImageFormat COLOR_IMAGE_FORMAT;
+        private DepthImageFormat DEPTH_IMAGE_FORMAT;
 
-        int frameWidth = 80;//change to use semaphore
-        int frameHeight = 60;
+        private int frameWidth = Semaphore.frameWidth;
+        private int frameHeight = Semaphore.frameHeight;
 
         // Constructor
         public KinectManager()
         {
-            sensors = new List<KinectSensor>();
+            //sensors = new List<KinectSensor>();
+            sensors = new KinectSensor[MAX_SENSORS];
             // Kinect manager has its own thread so that it can do stuff while
             // the app is listening for connections and doing form stuff
             kinectManagementThread = new Thread(startUp);
@@ -42,6 +45,9 @@ namespace QTELR_Interface
             if (frameWidth == 640 && frameHeight == 480)
             {
                 DEPTH_IMAGE_FORMAT = DepthImageFormat.Resolution640x480Fps30;
+                COLOR_IMAGE_FORMAT = ColorImageFormat.RgbResolution640x480Fps30;
+                colorOn = true;
+                Semaphore.colorOn = true;
             }
             else if (frameWidth == 320 && frameHeight == 240)
             {
@@ -68,12 +74,18 @@ namespace QTELR_Interface
             getSensors();
             if (sensors != null)
             {
-                for (int i = 0; i < num_sensors; i++)
+                //foreach (var sensor in sensors)
+                //{
+                //    prepareSensor(sensor);
+                //    startSensor(sensor);
+                //}
+                for(int index = 0; index < num_sensors; index++)
                 {
-                    prepareSensor(sensors[i]);
-                    startSensor(sensors[i]);
+                    prepareSensor(sensors[index]);
+                    startSensor(sensors[index]);
                 }
-                Console.WriteLine("All connected Kinects should be running, now.");
+                Console.WriteLine(num_sensors + " Kinect(s) should be running, now.");
+                Semaphore.kinectStarted = true;
             }
             else
             {
@@ -90,11 +102,12 @@ namespace QTELR_Interface
         {
             Console.WriteLine("Looking for Kinect...");
             //foreach (var potentialSensor in KinectSensor.KinectSensors.)
-            for (int potentialSensor = 0; potentialSensor < KinectSensor.KinectSensors.Count; potentialSensor++)
+            foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
-                if (KinectSensor.KinectSensors[potentialSensor].Status == KinectStatus.Connected)
+                if (potentialSensor.Status == KinectStatus.Connected)
                 {
-                    this.sensors.Add(KinectSensor.KinectSensors[potentialSensor]);
+                    //this.sensors.Add(potentialSensor);
+                    this.sensors[num_sensors] = potentialSensor;
                     num_sensors++;
                     Console.WriteLine("Kinect found...");
                     if (num_sensors == MAX_SENSORS)
@@ -105,6 +118,7 @@ namespace QTELR_Interface
             }
             if (num_sensors > 0)
                 Console.WriteLine("Number of Kinects found: " + num_sensors);
+            Semaphore.num_sensors = num_sensors; //Should I place in if statement?
         }
 
         // This starts all of the streams
@@ -117,13 +131,16 @@ namespace QTELR_Interface
                 // These are the various streams that are initialized on the Kinect.
                 //sensor.ColorStream.Enable(ColorImageFormat.RawBayerResolution640x480Fps30); //This is a different color mode. Ignore.
                 sensor.DepthStream.Enable(DEPTH_IMAGE_FORMAT);
-                sensor.ColorStream.Enable(COLOR_IMAGE_FORMAT);
+                if (colorOn)
+                {
+                    sensor.ColorStream.Enable(COLOR_IMAGE_FORMAT);
+                }
                 sensor.SkeletonStream.Enable();
                 // This is what would be used to draw colours from infrared (night vision mode).
                 //sensor.ColorStream.Enable(ColorImageFormat.InfraredResolution640x480Fps30);
                 
                 // Register an event that fires when data is ready
-                //sensor.AllFramesReady += AllFramesReady;
+                sensor.AllFramesReady += AllFramesReady;
                 Console.WriteLine("A Kinect sensor is ready.");
             }
         }
@@ -144,9 +161,9 @@ namespace QTELR_Interface
         {
             try
             {
-                foreach (var sensor in sensors)
+                for (int index = 0; index < num_sensors; index++)
                 {
-                    sensor.Stop();
+                    sensors[index].Stop();
                 }
             }
             catch (Exception e)
@@ -159,7 +176,7 @@ namespace QTELR_Interface
         //Event Kinect New Frame
         void AllFramesReady(object sender, AllFramesReadyEventArgs e)
         {
-            //int index = Array.IndexOf(this.sensors, (KinectSensor)sender);
+            int index = Array.IndexOf(this.sensors, (KinectSensor)sender);
             KinectSensor sensor = (KinectSensor)sender;
             //Console.WriteLine("Sensor" + index + " fired.");
 
@@ -168,7 +185,7 @@ namespace QTELR_Interface
             ColorImageFrame imageColorFrame = e.OpenColorImageFrame();
             SkeletonFrame imageSkeletonFrame = e.OpenSkeletonFrame();
 
-            if (false)//imageDepthFrame != null && imageColorFrame != null && init.mainWindow.loaded) //change to use semaphore
+            if (imageDepthFrame != null && (!colorOn || imageColorFrame != null) && imageSkeletonFrame != null && Semaphore.glControlLoaded)
             {
                 CoordinateMapper mapper = new CoordinateMapper(sensor);
                 SkeletonPoint[] skeletonPoints = new SkeletonPoint[imageDepthFrame.PixelDataLength];
@@ -176,43 +193,55 @@ namespace QTELR_Interface
 
                 // Copy the pixel data from the image to a temporary array
                 imageDepthFrame.CopyDepthImagePixelDataTo(depthPixels);
-
-                //Allocate array for color data
-                pixelColorData = new byte[sensor.ColorStream.FramePixelDataLength];
-                imageColorFrame.CopyPixelDataTo(pixelColorData);
-
+                
                 // Map Depth data to Skeleton points.
                 // skeletonPoints is being changed as a result of this function call
                 mapper.MapDepthFrameToSkeletonFrame(DEPTH_IMAGE_FORMAT, depthPixels, skeletonPoints);
-                // Adjust coordinates of skeleton points according to the colour format
-                // skeletonPoints is being changed as a result of this function call
-                //mapper.MapColorFrameToSkeletonFrame(COLOR_IMAGE_FORMAT, DEPTH_IMAGE_FORMAT, depthPixels, skeletonPoints);
+
+                short[,] vertexData;
+                if (colorOn)
+                {
+                    //Allocate array for color data
+                    pixelColorData = new byte[sensor.ColorStream.FramePixelDataLength];
+                    imageColorFrame.CopyPixelDataTo(pixelColorData);
+                    // Adjust coordinates of skeleton points according to the colour format
+                    // skeletonPoints is being changed as a result of this function call
+                    mapper.MapColorFrameToSkeletonFrame(COLOR_IMAGE_FORMAT, DEPTH_IMAGE_FORMAT, depthPixels, skeletonPoints);
+                    vertexData = new short[(frameHeight * frameWidth), 6];
+                }
+                else
+                {
+                    vertexData = new short[(frameHeight * frameWidth), 3];
+                }
 
                 // Convert SkeletonPoints data into short[][]
                 // [x, y, z, Blue, Green, Red]
-                //short[,] vertexData = new short[(frameHeight * frameWidth), 6];
-                //int i = 0;
-                //for(int row = 0; row < frameHeight * frameWidth; row++)
-                //{
-                //    vertexData[row, 0] = (short)(skeletonPoints[row].X * 1000);//Store for X
-                //    vertexData[row, 1] = (short)(skeletonPoints[row].Y * 1000);//Store for Y
-                //    vertexData[row, 2] = (short)(skeletonPoints[row].Z * 1000);//Store for Z
-                //    //vertexData[row, 3] = (short)pixelColorData[i + 2];
-                //    //vertexData[row, 4] = (short)pixelColorData[i + 1];
-                //    //vertexData[row, 5] = (short)pixelColorData[i];
-                //    i += 4;
-                //}
+
+                int i = 0;
+                for (int row = 0; row < frameHeight * frameWidth; row++)
+                {
+                    vertexData[row, 0] = (short)(skeletonPoints[row].X * 1000);//Store for X
+                    vertexData[row, 1] = (short)(skeletonPoints[row].Y * 1000);//Store for Y
+                    vertexData[row, 2] = (short)(skeletonPoints[row].Z * 1000);//Store for Z
+                    if (colorOn)
+                    {
+                        vertexData[row, 3] = (short)pixelColorData[i + 2];
+                        vertexData[row, 4] = (short)pixelColorData[i + 1];
+                        vertexData[row, 5] = (short)pixelColorData[i];
+                        i += 4;
+                    }
+                }
 
                 // Pass data to write to file
-                if (false)//init.mainWindow.signalToLoad)//change to use semaphore
+                if (Semaphore.readyForPCD)//change to use semaphore
                 {
-                    //PointCloudManipulation.inputShort(vertexData);
-                    //init.mainWindow.signalToLoad = false;
+                    Semaphore.passPCD(vertexData, index);
                 }
 
                 // Dispose frames for memory
                 imageDepthFrame.Dispose();
-                imageColorFrame.Dispose();
+                if (colorOn)
+                    imageColorFrame.Dispose();
                 imageSkeletonFrame.Dispose();
             }
         }

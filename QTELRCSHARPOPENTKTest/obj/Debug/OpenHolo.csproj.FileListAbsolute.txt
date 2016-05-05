@@ -1,0 +1,17 @@
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\OpenHolo.csproj.GenerateResource.Cache
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\QTELRCSHARPOPENTKTest.exe.config
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\QTELRCSHARPOPENTKTest.exe
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\QTELRCSHARPOPENTKTest.pdb
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\Microsoft.Kinect.dll
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\OpenTK.dll
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\OpenTK.GLControl.dll
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\Microsoft.Kinect.xml
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\OpenTK.pdb
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\OpenTK.xml
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\OpenTK.GLControl.xml
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\QTELRCSHARPOPENTKTest.exe
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\QTELRCSHARPOPENTKTest.pdb
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\OpenHolo.csprojResolveAssemblyReference.cache
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\OpenHolo.Window.resources
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\System.Numerics.Vectors.dll
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\System.Numerics.Vectors.xml
