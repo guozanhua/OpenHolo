@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QTELRCSHARPOPENTKTest", "QTELRCSHARPOPENTKTest\QTELRCSHARPOPENTKTest.csproj", "{D1313351-130F-49ED-AB4C-AC623F73F2FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHolo", "QTELRCSHARPOPENTKTest\OpenHolo.csproj", "{D1313351-130F-49ED-AB4C-AC623F73F2FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

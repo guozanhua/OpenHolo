@@ -76,7 +76,7 @@ namespace QTELR_Interface
             if (e.KeyChar == (char)Keys.Escape)
             {
                 Console.WriteLine("Application terminating");
-                MyApplication.kinectManager.stopKinect();
+                init.kinectManager.stopKinect();
                 //Thread.Sleep(1000);
                 Environment.Exit(0);
             }
@@ -88,7 +88,7 @@ namespace QTELR_Interface
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 Console.WriteLine("Application terminating");
-                MyApplication.kinectManager.stopKinect();
+                init.kinectManager.stopKinect();
                 //Thread.Sleep(1000);
                 Environment.Exit(0);
             }
@@ -394,7 +394,7 @@ namespace QTELR_Interface
 
         private void button_Clear_Click(object sender, EventArgs e)
         {
-            PointCloudManipulation.clearReference();
+
         }
 
         private void button_Capture_Click(object sender, EventArgs e)
