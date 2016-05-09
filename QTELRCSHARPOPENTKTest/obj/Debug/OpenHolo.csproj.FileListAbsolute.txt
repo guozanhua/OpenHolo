@@ -15,3 +15,4 @@ D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\OpenHolo.csprojResolveAs
 D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\OpenHolo.Window.resources
 D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\System.Numerics.Vectors.dll
 D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\bin\Debug\System.Numerics.Vectors.xml
+D:\USER\GITHub\OpenHolo\QTELRCSHARPOPENTKTest\obj\Debug\OpenHolo.PointCloudTweaker.resources

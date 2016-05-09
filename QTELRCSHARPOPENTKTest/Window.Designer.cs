@@ -165,15 +165,15 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // QTELRMainWindow
+            // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1027, 694);
+            this.ClientSize = new System.Drawing.Size(1027, 709);
             this.Controls.Add(this.glControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "OpenHolo";
+            this.Name = "Window";
             this.Text = "OpenHolo";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.closeForm);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.keyListener);

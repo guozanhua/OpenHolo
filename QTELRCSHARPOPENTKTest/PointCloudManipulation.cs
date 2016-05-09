@@ -37,8 +37,8 @@ namespace OpenHolo
                 }
             }
             transformation1 = new EuclideanTransform();
-            //transformation1.translation = new Vector3(0, 0, 0);
-            transformation1.rotation = new Quaternion(0, 0, (float)(2 * Math.PI), 0);
+            transformation1.translation = new Vector3(0, 0, 0);
+            transformation1.rotation = new Quaternion(0, 0, 0, 0);
         }
 
         public static void inputPCD(short[,] input, int index)
@@ -73,6 +73,11 @@ namespace OpenHolo
             {
                 Semaphore.passPCDCollectionToMainWindow(pointCloudCollection);
             }
+        }
+
+        public static void setTransform(EuclideanTransform input)
+        {
+            transformation1 = input;
         }
     }
 }
